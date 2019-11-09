@@ -2,8 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\StatResource;
-use App\Journal;
+use App\Http\Resources\Stats\StatsCollection;
 use App\Services\JournalStatService;
 use Illuminate\Http\Request;
 
@@ -33,8 +32,10 @@ class BookStatController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $stat = collect();
+        $stats = $this->service->getStats();
 
-        return StatResource::collection($stat);
+//        dd($stats);
+
+        return StatsCollection::make($stats);
     }
 }
