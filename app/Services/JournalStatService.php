@@ -10,6 +10,7 @@ namespace App\Services;
 
 
 use App\Repositories\JournalRepository;
+use Illuminate\Support\Collection;
 
 class JournalStatService
 {
@@ -32,8 +33,38 @@ class JournalStatService
         $startDate = \DateTime::createFromFormat('Y-m-d', $startDate);
         $endDate = \DateTime::createFromFormat('Y-m-d', $endDate);
 
-        $collection = $this->repository->getStatsOverPeriod();
+        $array = $this->repository->getStatsOverPeriod();
 
-        return $collection;
+        return $this->prepareStats($array);
+    }
+
+    //TODO: add filter by dates
+    private function prepareStats(array $array)
+    {
+        $stats = [];
+
+        $monthTotal = 0;
+        $yearTotal = 0;
+        $total = 0;
+        $monthIndex = $array[0]->date;
+        $lastIndex = count($array) - 1;
+
+        foreach ($array as $item) {
+            if ($monthIndex != $item->date) {
+                $stats[] = ['date' => $monthIndex, 'value' => $monthTotal];
+                $monthTotal = 0;
+                $monthIndex = $item->date;
+            }
+
+            $stats[] = ['date' => $item->date, 'title' => $item->title, 'value' => $item->value];
+            $monthTotal += $item->value;
+
+            $total += $item->value;
+        }
+
+        $stats[] = ['date' => $monthIndex, 'value' => $monthTotal];
+        $stats[] = ['value' => $total];
+
+        return collect($stats);
     }
 }

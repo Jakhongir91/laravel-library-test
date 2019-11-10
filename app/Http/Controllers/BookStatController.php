@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Stats\GetStatsRequest;
 use App\Http\Resources\Stats\StatsCollection;
 use App\Services\JournalStatService;
 use Illuminate\Http\Request;
@@ -30,9 +31,11 @@ class BookStatController extends Controller
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function __invoke(Request $request)
+    public function __invoke(GetStatsRequest $request)
     {
         $stats = $this->service->getStats($request->input('start_date'), $request->input('end_date'));
+
+        //TODO: add try catch if something went wrong
 
         return StatsCollection::make($stats);
     }

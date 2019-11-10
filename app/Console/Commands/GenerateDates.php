@@ -48,7 +48,11 @@ class GenerateDates extends Command
         $datesArray = [];
 
         foreach ($dates as $date) {
-            $datesArray[] = ['month' => $date->format('m'), 'year' => $date->format('Y')];
+            $datesArray[] = [
+                'month' => $date->format('m'),
+                'year' => $date->format('Y'),
+                'date' => $date->format('Y-m')
+            ];
         }
 
         Date::query()->delete();
