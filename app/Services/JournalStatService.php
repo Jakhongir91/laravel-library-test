@@ -9,77 +9,31 @@
 namespace App\Services;
 
 
+use App\Repositories\JournalRepository;
+
 class JournalStatService
 {
-    public function getStats()
-    {
-        $array = [
-            [
-                "date" => "2019-01",
-                "title" => "Война и мир",
-                "value" => 13
-            ],
-            [
-                "date" => "2019-01",
-                "title" => "Пикник у обочины",
-                "value" => 23
-            ],
-            [
-                "date" => "2019-01",
-                "title" => "Капитал",
-                "value" => 11
-            ],
-            [
-                "date" => "2019-01",
-                "value" => 47    // Общее значение за месяц
-            ],
-            [
-                "date" => "2019-02",
-                "title" => "Война и мир",
-                "value" => 64
-            ],
-            [
-                "date" => "2019-02",
-                "title" => "Пикник у обочины",
-                "value" => 0
-            ],
-            [
-                "date" => "2019-02",
-                "title" => "Капитал",
-                "value" => 4
-            ],
-            [
-                "date" => "2019-02",
-                "value" => 68    // Общее значение за месяц
-            ],
-            [
-                "date" => "2019-03",
-                "title" => "Война и мир",
-                "value" => 0
-            ],
-            [
-                "date" => "2019-03",
-                "title" => "Пикник у обочины",
-                "value" => 0
-            ],
-            [
-                "date" => "2019-03",
-                "title" => "Капитал",
-                "value" => 0
-            ],
-            [
-                "date" => "2019-03",
-                "value" => 0    // Общее значение за месяц, может быть нулевым
-            ],
-            [
-                "date" => "2019",
-                "value" => 1235    // Общее значение за год. Подсчет должен вестись с начала года вне зависимости от фильтра
-            ],
-            [
-                "value" => 10600    // Общее значение за все время. Подсчет должен вестись с начала истории статистики вне зависимости от фильтра
-            ],
-        ];
+    private $repository;
 
-        return collect($array);
+    public function __construct(JournalRepository $journalRepository)
+    {
+        $this->repository = $journalRepository;
+    }
+
+    /**
+     * Get stats by dates from query result.
+     *
+     * @param string|null $startDate
+     * @param $endDate
+     * @return Collection
+     */
+    public function getStats(?string $startDate, ?string $endDate)
+    {
+        $startDate = \DateTime::createFromFormat('Y-m-d', $startDate);
+        $endDate = \DateTime::createFromFormat('Y-m-d', $endDate);
+
+        $collection = $this->repository->getStatsOverPeriod();
+
+        return $collection;
     }
 }

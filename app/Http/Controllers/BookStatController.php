@@ -32,9 +32,7 @@ class BookStatController extends Controller
      */
     public function __invoke(Request $request)
     {
-        $stats = $this->service->getStats();
-
-//        dd($stats);
+        $stats = $this->service->getStats($request->input('start_date'), $request->input('end_date'));
 
         return StatsCollection::make($stats);
     }
