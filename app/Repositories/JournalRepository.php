@@ -31,12 +31,15 @@ class JournalRepository
             $countByMonths = $countByMonthsQuery->get();
         */
 
-        $countByMonths = DB::select('SELECT books.id, books.title, t2.month, t2.value, t2.year 
-                                            FROM books 
-                                            LEFT JOIN (SELECT MONTH(created_at) as month, book_id, count(book_id) as value, YEAR(created_at) as year FROM journal 
-                                                        GROUP BY month, book_id, year) 
-                                            as t2 on books.id = t2.book_id
-                                            order by t2.year asc, t2.month, books.id ASC');
+        $countByMonths = DB::select('SELECT dates.month, dates.year, books.id as book_id, books.title, COALESCE(stats.value,0) as value FROM `dates` CROSS JOIN books
+                                        LEFT JOIN
+                                        
+                                        (SELECT books.id as book_id, books.title, t2.month, t2.value, t2.year
+                                          FROM books
+                                          LEFT JOIN
+                                              (SELECT MONTH(created_at) as month, book_id, count(book_id) as value, YEAR(created_at) as year FROM journal GROUP BY month, book_id, year order by year, month, book_id)
+                                          as t2 on books.id = t2.book_id)
+                                        as stats ON books.id = stats.book_id and dates.month = stats.month and dates.year = stats.year');
 
         return collect($countByMonths);
     }
