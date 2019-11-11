@@ -65,7 +65,7 @@ class JournalStatService
                 $yearIndex = $item->year;
             }
 
-            if ($monthIndex != $item->date || $index == $lastIndex) {
+            if ($monthIndex != $item->date) {
                 if ($this->isMonthInRange($monthIndex)) {
                     $stats[] = ['date' => $monthIndex, 'value' => $monthTotal];
                 }
@@ -74,7 +74,7 @@ class JournalStatService
                 $monthTotal = 0;
             }
 
-            if ($yearIndex != $item->year || $index == $lastIndex) {
+            if ($yearIndex != $item->year) {
                 if ($this->isYearInRange($yearIndex)) {
                     $stats[] = ['date' => strval($yearIndex), 'value' => $yearTotal];
                 }
@@ -85,6 +85,24 @@ class JournalStatService
 
             if ($this->isMonthInRange($item->date)) {
                 $stats[] = ['date' => $item->date, 'title' => $item->title, 'value' => $item->value];
+            }
+
+            if ($index == $lastIndex) {
+                if ($this->isMonthInRange($monthIndex)) {
+                    $stats[] = ['date' => $monthIndex, 'value' => $monthTotal];
+                }
+
+                $monthIndex = $item->date;
+                $monthTotal = 0;
+            }
+
+            if ($index == $lastIndex) {
+                if ($this->isYearInRange($yearIndex)) {
+                    $stats[] = ['date' => strval($yearIndex), 'value' => $yearTotal];
+                }
+
+                $yearIndex = $item->year;
+                $yearTotal = 0;
             }
 
             $monthTotal += $item->value;
