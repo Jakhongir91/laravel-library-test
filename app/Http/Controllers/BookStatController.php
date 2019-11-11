@@ -27,16 +27,18 @@ class BookStatController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param \Illuminate\Http\Request $request
+     * @param GetStatsRequest $request
      *
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function __invoke(GetStatsRequest $request)
     {
-        $stats = $this->service->getStats($request->input('start_date'), $request->input('end_date'));
+        try {
+            $stats = $this->service->getStats($request->input('start_date'), $request->input('end_date'));
 
-        //TODO: add try catch if something went wrong
-
-        return StatsCollection::make($stats);
+            return StatsCollection::make($stats);
+        } catch (\Exception $exception) {
+            return response(json(['Error' => $exception->getMessage()]), 500);
+        }
     }
 }
