@@ -24,7 +24,8 @@ class GetStatsRequest extends FormRequest
     public function rules()
     {
         return [
-            // TODO: add validation rules
+            'start_date' => 'nullable|date_format:Y-m-d',
+            'end_date' => 'nullable|date_format:Y-m-d|after:start_date',
         ];
     }
 
