@@ -27,7 +27,7 @@ class GetStatsRequest extends FormRequest
     {
         return [
             'start_date' => 'nullable|date_format:Y-m-d',
-            'end_date' => 'nullable|date_format:Y-m-d|after:start_date',
+            'end_date' => 'nullable|date_format:Y-m-d',
         ];
     }
 

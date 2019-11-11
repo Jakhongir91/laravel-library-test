@@ -38,7 +38,7 @@ class BookStatController extends Controller
 
             return StatsCollection::make($stats);
         } catch (\Exception $exception) {
-            return response(json(['Error' => $exception->getMessage()]), 500);
+            return response()->json(['Error' => 'Check server logs'])->setStatusCode(500);
         }
     }
 }
